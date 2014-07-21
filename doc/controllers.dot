@@ -1,0 +1,15 @@
+digraph controllers_diagram {
+	graph[overlap=false, splines=true]
+	"ApiKeysController" [shape=Mrecord, label="{ApiKeysController|_one_time_conditions_valid_110?\l_one_time_conditions_valid_112?\lcreate\ldestroy\lindex\lupdate\l|\l|_layout\l}"]
+	"MailerController" [shape=Mrecord, label="{MailerController|resetpassword\l|\l|_layout\l}"]
+	"UserSessionsController" [shape=Mrecord, label="{UserSessionsController|_one_time_conditions_valid_114?\l_one_time_conditions_valid_118?\lcreate\ldestroy\lnew\lshow\l|\l|_layout\l}"]
+	"PlacesController" [shape=Mrecord, label="{PlacesController|_one_time_conditions_valid_126?\lcreate\ldestroy\ledit\lhierarchify\lindex\lnew\lshow\lupdate\l|\l|_layout\l}"]
+	"SubdomainsController" [shape=Mrecord, label="{SubdomainsController|crossdomain\lindex\l|\l|_layout\l}"]
+	"ApplicationController" [shape=Mrecord, label="{ApplicationController|_one_time_conditions_valid_100?\l_one_time_conditions_valid_102?\lget_locale\lset_variables\l|\l|_layout\lbad_channel_xml\lbad_feed_xml\lchannel_permission?\lcheck_permissions\lcurrent_user\lcurrent_user_session\ldomain\lget_channel_data\lget_date_range\lget_header_value\lget_userkey\lis_a_number?\lredirect_back_or_default\lrequire_no_user\lrequire_user\lset_channels_menu\lset_time_zone\lset_timezone_from_offset\lstore_location\l}"]
+	"ChartsController" [shape=Mrecord, label="{ChartsController|index\lshow\lupdate\l|\l|_layout\ldefault_height\ldefault_width\lfix_color\l}"]
+	"StatusController" [shape=Mrecord, label="{StatusController|index\lshow\l|\l|_layout\lchannel_select_terse\l}"]
+	"FeedController" [shape=Mrecord, label="{FeedController|index\lshow\l|\l|_layout\lchannel_select_data\lcreate_empty_clone\lfeed_select_data\lfeeds_into_averages\lfeeds_into_medians\lfeeds_into_sums\lfeeds_into_timescales\lget_floored_time\lis_a_number?\litem_round\lobject_average\lobject_median\lobject_round\lobject_sum\lparsefloat\ltimeparam_valid?\l}"]
+	"PagesController" [shape=Mrecord, label="{PagesController|home\l|\l|_layout\l}"]
+	"UsersController" [shape=Mrecord, label="{UsersController|_one_time_conditions_valid_220?\l_one_time_conditions_valid_224?\lchange_password\lcreate\ledit\lforgot_password\lnew\lreset_password\lshow\lupdate\l|\l|_layout\l}"]
+	"ChannelsController" [shape=Mrecord, label="{ChannelsController|_one_time_conditions_valid_300?\l_one_time_conditions_valid_304?\l_one_time_conditions_valid_306?\lclear\lcompute_friendship\lcreate\ldestroy\ledit\lfriendship_list\limport\lindex\lindirect_location\lnew\lpost_data\lpost_profile\lrelationship_management\lshow\lupdate\lupload\l|\l|_layout\ldate_parsable?\lhas_headers?\l}"]
+}

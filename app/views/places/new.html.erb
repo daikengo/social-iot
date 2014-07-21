@@ -1,0 +1,56 @@
+<h1>New Location</h1>
+<table cellpadding=10>
+  <tr>
+    <td valign=top><%= render 'form' %></td>
+    <td valign=top><%= gmaps("markers" => {"data" => @allplaces, "options" => {"draggable" => true}}, "map_options" => { "type" => "HYBRID", "center_on_user" => true, "processing" => "json", "auto_zoom" => false, "zoom" => 30, "auto_adjust" => true, "detect_location" => true}) %></td>
+  </tr>
+</table>
+<div>
+<%= link_to 'Back', edit_channel_path(session[:canale]) %>
+</div>
+<% content_for :scripts do %>
+    <script type="text/javascript" charset="utf-8">
+        var markersArray = [];
+        // On click, clear markers, place a new one, update coordinates in the form
+        Gmaps.map.callback = function() {
+            google.maps.event.addListener(Gmaps.map.serviceObject, 'click', function(event) {
+                clearOverlays();
+                placeMarker(event.latLng);
+                updateFormLocation(event.latLng);
+            });
+        };
+        // Update form attributes with given coordinates
+        function updateFormLocation(latLng) {
+            $('#place_longitude').val(latLng.lng());
+            $('#place_latitude').val(latLng.lat());
+        }
+        // Add a marker with an open infowindow
+        function placeMarker(latLng) {
+            var marker = new google.maps.Marker({
+                position: latLng,
+                map: Gmaps.map.serviceObject,
+                draggable: true
+            });
+            markersArray.push(marker);
+            // Set and open infowindow
+            var infowindow = new google.maps.InfoWindow({
+                content: '<div class="popup"><h2>Awesome!</h2><p>Drag me and adjust the zoom level.</p>'
+            });
+            infowindow.open(Gmaps.map.serviceObject,marker);
+            // Listen to drag & drop
+            google.maps.event.addListener(marker, 'dragend', function() {
+                updateFormLocation(this.getPosition());
+            });
+        }
+        // Removes the overlays from the map
+        function clearOverlays() {
+            if (markersArray) {
+                for (var i = 0; i < markersArray.length; i++ ) {
+                    markersArray[i].setMap(null);
+                }
+            }
+            markersArray.length = 0;
+        }
+
+    </script>
+<% end %>

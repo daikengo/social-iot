@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script type="text/javascript" src="http<%= 's' if @ssl %>://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+  <script type="text/javascript" src="<%= @domain %>javascripts/highstock<%= '-android' if get_header_value('user_agent').upcase.index('ANDROID') %>.js"></script>
+  
+  <script type="text/javascript">
+  
+    // user's timezone offset
+    var myOffset = new Date().getTimezoneOffset();
+    
+    // converts date format from JSON
+    function getChartDate(d) {
+      // get the data using javascript's date object (year, month, day, hour, minute, second)
+      // months in javascript start at 0, so remember to subtract 1 when specifying the month
+      // offset in minutes is converted to milliseconds and subtracted so that chart's x-axis is correct
+      return Date.UTC(d.substring(0,4), d.substring(5,7)-1, d.substring(8,10), d.substring(11,13), d.substring(14,16), d.substring(17,19)) - (myOffset * 60000);
+    }
+
+    $(document).ready(function() {
+      // blank array for holding chart data
+      var chartData = [];
+      // variable for the local date in milliseconds
+      var localDate;
+      // variable for the last date added to the chart
+      var last_date;
+
+      // get the data with a webservice call
+      $.getJSON('<%= "#{@domain}channels/#{params[:channel_id]}/field/#{params[:id]}.json?callback=?&offset=0#{@qs}" %>', function(data) {
+        // if no access
+        if (data == '-1') {
+          $('#chart-container').append('<%= t(:chart_no_access) %>');
+        }
+
+        // iterate through each feed
+        $.each(data.feeds, function() {
+          var p = new Highcharts.Point();
+          // set the proper values
+
+          var v = this.field<%= params[:id] %>;
+          p.x = getChartDate(this.created_at);
+          p.y = parseFloat(v);
+          // add location if possible
+          if (this.location) { p.name = this.location; }
+          // if a numerical value exists add it
+          if (!isNaN(parseInt(v))<% if params[:max] %> && p.y <= <%= params[:max]%><% end %><% if params[:min] %> && p.y >= <%= params[:min]%><% end %>) { chartData.push(p); }
+        });
+
+        // specify the chart options
+        var chartOptions = {
+          chart: {
+            renderTo: 'chart-container',
+            animation:true,
+              height: 232,
+              width: 434,
+            events: {
+              load: function() {
+                if ('true' === '<%= params[:dynamic] %>') {
+                  // push data every 15 seconds
+                  setInterval(function() {
+    
+                    // get the data with a webservice call
+                    $.getJSON('<%= "#{@domain}channels/#{params[:channel_id]}/feed/last.json?callback=?&offset=0&location=true" %>', function(data) { 
+                      // if data exists
+                      if (data && data.field<%= params[:id] %>) {
+                        var p = new Highcharts.Point();
+                        // set the proper values
+                        var v = data.field<%= params[:id] %>;
+                        p.x = getChartDate(data.created_at);
+                        p.y = parseFloat(v);
+                        // add location if possible
+                        if (data.location) { p.name = data.location; }
+                        // get the last date if possible
+                        if (dynamicChart.series[0].data.length > 0) { last_date = dynamicChart.series[0].data[dynamicChart.series[0].data.length-1].x; }
+                        // if a numerical value exists and it is a new date, add it
+                        if (!isNaN(parseInt(v)) && (p.x != last_date)<% if params[:max] %> && p.y <= <%= params[:max]%><% end %><% if params[:min] %> && p.y >= <%= params[:min]%><% end %>) {
+                          dynamicChart.series[0].addPoint(p, true, <%= (@push) ? 'true' : 'false' %>);
+                        }
+                      }
+                    });
+    
+                  }, 15000);
+                }
+              }
+            }
+          },
+            rangeSelector:{
+                buttons : [{
+                    type : 'hour',
+                    count : 1,
+                    text : '1h'
+                }, {
+                    type : 'day',
+                    count : 1,
+                    text : '1D'
+                },{
+                    type :'week',
+                    count : 1,
+                    text : '1w'
+                }, {
+                    type : 'all',
+                    count : 1,
+                    text : 'All'
+                }],
+                selected : 1,
+                inputEnabled : false
+            },
+          title: {
+            text: ''
+          },
+          tooltip: {
+            // reformat the tooltips so that local times are displayed
+            formatter: function() {
+              var d = new Date(this.x + (myOffset*60000));
+              var n = (this.point.name === undefined) ? '' : '<br/>' + this.point.name;
+              return this.series.name + ':<b>' + this.y + '</b>' + n + '<br/>' + d.toDateString() + '<br/>' + d.toTimeString().replace(/\(.*\)/, "");
+            }
+          },
+          xAxis: {
+            type: 'datetime',
+            title: {
+              text: ''
+            }
+          },
+          yAxis: {
+            title: {
+              text: ''
+            }
+          },
+          legend: {
+            enabled: false
+          },
+          series: [{
+            name: data.channel.field<%= params[:id] %>,
+              type: 'area',
+              pointStart: Date.UTC(2013, 3, 1),
+              pointInterval: 3600 * 1000,
+              tooltip: {
+                  valueDecimals: 1,
+                  valueSuffix: '°C'
+              }
+          }]
+        };
+
+        // add the data to the chart
+        chartOptions.series[0].data = chartData;
+
+        // set chart labels here so that decoding occurs properly
+        chartOptions.title.text = <% if params[:title] %>decodeURIComponent('<%= u(params[:title]) %>')<% else %>data.channel.name<% end %>;
+        chartOptions.xAxis.title.text = <% if params[:xaxis] %>decodeURIComponent('<%= u(params[:xaxis]) %>'<% else %>'Date'<% end %>;
+        chartOptions.yAxis.title.text = <% if params[:yaxis] %>decodeURIComponent('<%= u(params[:yaxis]) %>')<% else %><%= "data.channel.field#{params[:id]}" %><% end %>;
+
+        // draw the chart
+        var dynamicChart = new Highcharts.StockChart(chartOptions);
+
+      });
+
+    });
+    /**
+     * Gray theme for Highcharts JS
+     * @author Torstein Hønsi
+     */
+
+    Highcharts.theme = {
+        colors: ["#DDDF0D", "#7798BF", "#55BF3B", "#DF5353", "#aaeeee", "#ff0066", "#eeaaee",
+            "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"],
+        chart: {
+            backgroundColor: {
+                linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+                stops: [
+                    [0, 'rgb(96, 96, 96)'],
+                    [1, 'rgb(16, 16, 16)']
+                ]
+            },
+            borderWidth: 0,
+            borderRadius: 15,
+            plotBackgroundColor: null,
+            plotShadow: false,
+            plotBorderWidth: 0
+        },
+        title: {
+            style: {
+                color: '#FFF',
+                font: '16px Lucida Grande, Lucida Sans Unicode, Verdana, Arial, Helvetica, sans-serif'
+            }
+        },
+        subtitle: {
+            style: {
+                color: '#DDD',
+                font: '12px Lucida Grande, Lucida Sans Unicode, Verdana, Arial, Helvetica, sans-serif'
+            }
+        },
+        xAxis: {
+            gridLineWidth: 0,
+            lineColor: '#999',
+            tickColor: '#999',
+            labels: {
+                style: {
+                    color: '#999',
+                    fontWeight: 'bold'
+                }
+            },
+            title: {
+                style: {
+                    color: '#AAA',
+                    font: 'bold 12px Lucida Grande, Lucida Sans Unicode, Verdana, Arial, Helvetica, sans-serif'
+                }
+            }
+        },
+        yAxis: {
+            alternateGridColor: null,
+            minorTickInterval: null,
+            gridLineColor: 'rgba(255, 255, 255, .1)',
+            minorGridLineColor: 'rgba(255,255,255,0.07)',
+            lineWidth: 0,
+            tickWidth: 0,
+            labels: {
+                style: {
+                    color: '#999',
+                    fontWeight: 'bold'
+                }
+            },
+            title: {
+                style: {
+                    color: '#AAA',
+                    font: 'bold 12px Lucida Grande, Lucida Sans Unicode, Verdana, Arial, Helvetica, sans-serif'
+                }
+            }
+        },
+        legend: {
+            itemStyle: {
+                color: '#CCC'
+            },
+            itemHoverStyle: {
+                color: '#FFF'
+            },
+            itemHiddenStyle: {
+                color: '#333'
+            }
+        },
+        labels: {
+            style: {
+                color: '#CCC'
+            }
+        },
+        tooltip: {
+            backgroundColor: {
+                linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+                stops: [
+                    [0, 'rgba(96, 96, 96, .8)'],
+                    [1, 'rgba(16, 16, 16, .8)']
+                ]
+            },
+            borderWidth: 0,
+            style: {
+                color: '#FFF'
+            }
+        },
+
+
+        plotOptions: {
+            series: {
+                shadow: true
+            },
+            line: {
+                dataLabels: {
+                    color: '#CCC'
+                },
+                marker: {
+                    lineColor: '#333'
+                }
+            },
+            spline: {
+                marker: {
+                    lineColor: '#333'
+                }
+            },
+            scatter: {
+                marker: {
+                    lineColor: '#333'
+                }
+            },
+            candlestick: {
+                lineColor: 'white'
+            }
+        },
+
+        toolbar: {
+            itemStyle: {
+                color: '#CCC'
+            }
+        },
+
+        navigation: {
+            buttonOptions: {
+                symbolStroke: '#DDDDDD',
+                hoverSymbolStroke: '#FFFFFF',
+                theme: {
+                    fill: {
+                        linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+                        stops: [
+                            [0.4, '#606060'],
+                            [0.6, '#333333']
+                        ]
+                    },
+                    stroke: '#000000'
+                }
+            }
+        },
+
+        // scroll charts
+        rangeSelector: {
+            buttonTheme: {
+                fill: {
+                    linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+                    stops: [
+                        [0.4, '#888'],
+                        [0.6, '#555']
+                    ]
+                },
+                stroke: '#000000',
+                style: {
+                    color: '#CCC',
+                    fontWeight: 'bold'
+                },
+                states: {
+                    hover: {
+                        fill: {
+                            linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+                            stops: [
+                                [0.4, '#BBB'],
+                                [0.6, '#888']
+                            ]
+                        },
+                        stroke: '#000000',
+                        style: {
+                            color: 'white'
+                        }
+                    },
+                    select: {
+                        fill: {
+                            linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+                            stops: [
+                                [0.1, '#000'],
+                                [0.3, '#333']
+                            ]
+                        },
+                        stroke: '#000000',
+                        style: {
+                            color: 'yellow'
+                        }
+                    }
+                }
+            },
+            inputStyle: {
+                backgroundColor: '#333',
+                color: 'silver'
+            },
+            labelStyle: {
+                color: 'silver'
+            }
+        },
+
+        navigator: {
+            handles: {
+                backgroundColor: '#666',
+                borderColor: '#AAA'
+            },
+            outlineColor: '#CCC',
+            maskFill: 'rgba(16, 16, 16, 0.5)',
+            series: {
+                color: '#7798BF',
+                lineColor: '#A6C7ED'
+            }
+        },
+
+        scrollbar: {
+            barBackgroundColor: {
+                linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+                stops: [
+                    [0.4, '#888'],
+                    [0.6, '#555']
+                ]
+            },
+            barBorderColor: '#CCC',
+            buttonArrowColor: '#CCC',
+            buttonBackgroundColor: {
+                linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+                stops: [
+                    [0.4, '#888'],
+                    [0.6, '#555']
+                ]
+            },
+            buttonBorderColor: '#CCC',
+            rifleColor: '#FFF',
+            trackBackgroundColor: {
+                linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+                stops: [
+                    [0, '#000'],
+                    [1, '#333']
+                ]
+            },
+            trackBorderColor: '#666'
+        },
+
+        // special colors for some of the demo examples
+        legendBackgroundColor: 'rgba(48, 48, 48, 0.8)',
+        legendBackgroundColorSolid: 'rgb(70, 70, 70)',
+        dataLabelsColor: '#444',
+        textColor: '#E0E0E0',
+        maskColor: 'rgba(255,255,255,0.3)'
+    };
+
+    // Apply the theme
+    var highchartsOptions = Highcharts.setOptions(Highcharts.theme);
+  </script>
+</head>
+<body style='background-color: <%= params[:bgcolor] ? params[:bgcolor] : 'white' %>;'>
+  <div id="chart-container" style="width: <%= params[:width] ? params[:width].to_i - 25 : @width.to_i - 25 %>px; height: <%= params[:height] ? params[:height].to_i - 25 : @height.to_i - 25 %>px;"></div>
+</body>
+</html>

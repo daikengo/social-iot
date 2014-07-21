@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?><component name="dataSourceStorage">
+  <data-source source="LOCAL" name="Rails siot: production" product="" version="" jdbc-version="" driver-name="" driver-version="" uuid="3cc56393-3a2c-4608-be17-7a50244c7242">
+    <jdbc-driver>com.mysql.jdbc.Driver</jdbc-driver>
+    <jdbc-url>jdbc:mysql://127.0.0.1/siot_production</jdbc-url>
+    <user-name>root</user-name>
+    <user-password>dfccdfd8dfcbdfc4dfc9dfc5df93df9cdf93</user-password>
+    <libraries>
+      <library>
+        <url>file://$USER_HOME$/.RubyMine40/config/jdbc-drivers/mysql-connector-license.txt</url>
+      </library>
+      <library>
+        <url>file://$USER_HOME$/.RubyMine40/config/jdbc-drivers/mysql-connector-java-5.1.18-bin.jar</url>
+      </library>
+    </libraries>
+  </data-source>
+</component>

@@ -1,0 +1,41 @@
+<%= form_for (@place) do |d| %>
+    <%= error_messages_for 'place' %>
+    <input name='userlogin' class='userlogin' />
+    <table class="table_no_header">
+      <tr>
+        <td class="left">Location name</td>
+        <td><%= d.text_field :name %></td>
+      </tr>
+      <tr>
+        <td class="left">Location address</td>
+        <td><%= d.text_field :address %></td>
+      </tr>
+      <tr>
+        <td class="left">Latitude</td>
+        <td><%= d.text_field :latitude %></td>
+      </tr>
+      <tr>
+        <td class="left">Longitude</td>
+        <td><%= d.text_field :longitude %></td>
+      </tr>
+      <tr>
+        <td class="left"><%= t(:public) %></td>
+        <td><%= d.check_box :public %></td>
+      </tr>
+      <tr>
+        <td class="left"><%= t(:work) %></td>
+        <td><%= d.check_box :work %></td>
+      </tr>
+      <tr>
+        <td class="left"><%= t(:home) %></td>
+        <td><%= d.check_box :home %></td>
+      </tr>
+      <tr>
+        <td class="left"><%= t(:range) %></td>
+        <td><%= d.text_field :range %></td>
+      </tr>
+    </table>
+    <div class="actions">
+      <%= d.submit %>
+    </div>
+<% end %>

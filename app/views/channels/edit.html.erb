@@ -1,0 +1,360 @@
+<h2>
+  <%= link_to t(:channels), channels_path %> &raquo;
+	<%= link_to channel_path(@channel.id) do %> <%= t(:channel) %> <%= @channel.id %><% end %> &raquo;
+  <%= t(:edit) %>
+</h2>
+
+<table cellpadding=10>
+  <tr>
+    <td>
+      <%= form_for (@channel), :html => {:method => 'put'} do |d| %>
+          <%= error_messages_for 'channel', :header_message => t(:try_again), :message => t(:channel_error) %>
+          <input name='userlogin' class='userlogin' />
+          <table class="table_no_header">
+            <tr>
+              <td class="left"><%= t(:channel_name) %></td>
+              <td><%= d.text_field :name %></td>
+            </tr>
+            <tr>
+              <td class="left"><%= t(:channel_description) %></td>
+              <td><%= d.text_field :description %></td>
+            </tr>
+            <tr>
+              <td class="left"><%= t(:model) %></td>
+              <td><%= d.text_field :model%></td>
+            </tr>
+            <tr>
+              <td class="left"><%= t(:brand) %></td>
+              <td><%= d.text_field :brand%></td>
+            </tr>
+            <tr>
+              <td class="left"><%= t(:type) %></td>
+              <td><%= d.collection_select :device_type, Channel::DEVICE_TYPES, :to_s, :to_s,
+                                          :include_blank => true %></td>
+            </tr>
+            <tr>
+              <td class="left"><%= t(:bt_mac_address) %></td>
+              <td><%= d.text_field :bt_mac_address %></td>
+            </tr>
+            <tr>
+              <td class="left"><%= t(:wf_mac_address) %></td>
+              <td><%= d.text_field :wf_mac_address %></td>
+            </tr>
+            <tr>
+              <td class="left">Mobile Device?</td>
+              <td><%= d.check_box :mobility_status, :class => 'mobile_status',:id => "thiselement",:onclick => "switchvisibility('thiselement')"%></td>
+            </tr>
+            <tr id="locat">
+              <td class="left"><%= t(:location) %></td>
+              <td><%= d.text_field :location %></td>
+            </tr>
+            <tr id="locat_name">
+              <td class="left"><%= t(:location_name) %></td>
+              <td><%= d.text_field :location_name %></td>
+            </tr>
+            <tr id="radio">
+              <td>
+                <%= d.radio_button :location_type,1 %>
+                <%= label :location_type, 'Public' %>
+                <%= d.radio_button :location_type,2 %>
+                <%= label :location_type, 'Work' %>
+                <%= d.radio_button :location_type,3 %>
+                <%= label :location_type, 'Home' %>
+              </td>
+            </tr>
+            <tr id="autindloc">
+              <td class="left"><%= t(:aut_ind_loc) %></td>
+              <td><%= d.check_box :aut_ind_loc %></td>
+            </tr>
+            <tr>
+              <td class="left"><%= t(:public) %></td>
+              <td><%= d.check_box :public_flag %></td>
+            </tr>
+            <tr>
+              <td class="left">Make OOR?</td>
+              <td><%= d.check_box :oor_flag %></td>
+            </tr>
+            <tr>
+              <td class="left">Make CLOR?</td>
+              <td><%= d.check_box :clor_flag %></td>
+            </tr>
+            <tr>
+              <td class="left">Make POR?</td>
+              <td><%= d.check_box :por_flag %></td>
+            </tr>
+            <tr>
+              <td class="left">Make CWOR?</td>
+              <td><%= d.check_box :cwor_flag %></td>
+            </tr>
+            <tr>
+              <td class="left">Make SOR?</td>
+              <td><%= d.check_box :sor_flag %></td>
+            </tr>
+            <tr>
+              <td class="left"><%= t(:temperature) %> (°C)</td>
+              <td><%= d.text_field :field1, :class => 'field' %></td>
+            </tr>
+            <tr>
+              <td class="left"><%= t(:current) %> (A)</td>
+              <td><%= d.text_field :field2, :class => 'field' %></td>
+            </tr>
+            <tr>
+              <td class="left"><%= t(:voltage) %> (V)</td>
+              <td><%= d.text_field :field3, :class => 'field' %></td>
+            </tr>
+            <tr>
+              <td class="left"><%= t(:power) %> (W)</td>
+              <td><%= d.text_field :field4, :class => 'field' %></td>
+            </tr>
+            <tr>
+              <td class="left"><%= t(:nb_mac_address) %></td>
+              <td><%= d.text_field :field5, :class => 'field' %></td>
+            </tr>
+            <tr>
+              <td class="left"><%= t(:latitude) %></td>
+              <td><%= d.text_field :field6, :class => 'field' %></td>
+            </tr>
+            <tr>
+              <td class="left"><%= t(:longitude) %></td>
+              <td><%= d.text_field :field7, :class => 'field' %></td>
+            </tr>
+            <tr>
+              <td class="left"><%= t(:humidity) %>(%)</td>
+              <td><%= d.text_field :field8, :class => 'field' %></td>
+            </tr>
+            <tr>
+              <td class="left"><%= t(:pressure) %>(Pa)</td>
+              <td><%= d.text_field :field9, :class => 'field' %></td>
+            </tr>
+            <tr>
+              <td class="left"><%= t(:weight) %>(g)</td>
+              <td><%= d.text_field :field10, :class => 'field' %></td>
+            </tr>
+            <tr>
+              <td class="left"><%= t(:presence) %></td>
+              <td><%= d.text_field :field11, :class => 'field' %></td>
+            </tr>
+            <tr>
+              <td class="left"><%= t(:alarm) %></td>
+              <td><%= d.text_field :field12, :class => 'field' %></td>
+            </tr>
+            <tr>
+              <td class="left"><%= t(:custom_field) %> 13</td>
+              <td><%= d.text_field :field13, :class => 'field' %></td>
+            </tr>
+            <tr>
+              <td class="left"><%= t(:custom_field) %> 14</td>
+              <td><%= d.text_field :field14, :class => 'field' %></td>
+            </tr>
+            <tr>
+              <td class="left"><%= t(:custom_field) %> 15</td>
+              <td><%= d.text_field :field15, :class => 'field' %></td>
+            </tr>
+            <tr>
+              <td class="left"><%= t(:custom_field) %> 16</td>
+              <td><%= d.text_field :field16, :class => 'field' %></td>
+            </tr>
+          </table>
+          <%= d.submit t(:save_changes) %>
+      <% end %>
+	
+        <br /><br />
+
+        <h2><%= t(:channel_clear_message) %></h2>
+        <%= button_to t(:channel_clear), clear_channel_path(@channel), :confirm => t(:confirm_channel_clear) %>
+
+        <br /><br />
+
+        <h2><%= t(:channel_delete_message) %></h2>
+        <%= button_to t(:channel_delete), channel_path(@channel), :method => 'delete', :confirm => t(:confirm_channel_delete) %>
+
+          <td valign="top" id="mappa">
+            <table>
+              <tr>
+            <td><%= gmaps4rails(@allplaces) %></td>
+              </tr>
+              <tr>
+                <td>
+                <h1><%=	t(:new_location)  %></h1>
+                <%= button_to t(:new_location), new_place_path, :method => :get %>
+                </td>
+              </tr>
+            </table>
+          </td>
+
+
+  </tr>
+</table>
+
+
+
+<% content_for :scripts do %>
+<script type="text/javascript">
+  //////////////////////////////////////////////////////////////
+ window.onload=function () {
+      if (gon.prova) {
+          $('#channel_location').val(null);
+          $("#channel_location_name").val(null);
+          $("#locat").hide();
+          $("#locat_name").hide();
+          $("#radio").hide();
+          $("#mappa").hide();
+
+      }
+      else {
+
+          $("#locat").show();
+          $("#locat_name").show();
+          $("#mappa").show();
+          Gmaps.loadMaps();
+          $("#radio").show();
+          $("#autindloc").hide()
+      }
+  };
+  //////////////////////////////////////////////////////////////
+  Gmaps.map.callback = function() {
+      for (var i = 0; i <  this.markers.length; ++i) {
+          google.maps.event.addListener(Gmaps.map.markers[i].serviceObject, 'click', handleMarkerClickClosure(Gmaps.map.markers[i]) );
+      }
+
+  };
+
+  function handleMarkerClickClosure(marker) {
+      return function() {
+          //alert(marker.name+' '+marker.latitude+' '+marker.longitude);
+          //alert(marker.public);
+          $('#channel_location').val(marker.id);
+          $('#channel_location_name').val(marker.name);
+          if (marker.work) {
+              $('#channel_location_type').val('2');
+          }
+              else if (marker.public) {
+                  $('#channel_location_type').val('1');
+                }
+                  else{
+                  $('#channel_location_type').val('3');
+              }
+          }
+  }
+  //////////////////////////////////////////////////////////////
+  function switchvisibility(el) {
+      if (document.getElementById(el).checked) {
+
+          $('#channel_location').val(null);
+          $("#channel_location_name").val(null);
+          $("#locat").hide();
+          $("#locat_name").hide();
+          $("#radio").hide();
+          $("#mappa").hide();
+          $("#autindloc").show()
+
+
+      } else {
+
+          $("#locat").show();
+          $("#locat_name").show();
+          $("#mappa").show();
+          Gmaps.loadMaps();
+          $("#radio").show();
+          $("#autindloc").hide()
+      }
+  }
+
+  //////////////////////////////////////////////////////////////
+
+  //////////////////////////////////////////////////////////////
+
+	// remember default field label
+	//var default_label = 'Temperature';
+	// when document is ready
+	$(function() {
+
+		// iterate through each field textbox
+		$('.field').each(function() {
+			// if a value is present, show the 'remove' checkbox
+			if ($(this).val()) {
+				$(this).after('<span class="small" id="span_' + $(this).attr('id') + '"><input type="checkbox" onclick="removeField(\'' + $(this).attr('id') + '\')"  /><span class="up2">remove</span></span>');
+			// else disable
+			} else {
+				$(this).after('<span class="small" id="span_' + $(this).attr('id') + '"><input type="checkbox" onclick="addField(\'' + $(this).attr('id') + '\')"  /><span class="up2">add   </span></span>');
+			}
+		});
+
+	});
+
+	// adds a field
+	function addField(id) {
+		$('#span_'+id).remove();
+        /*
+        if (id=='channel_field1') {
+            $('#'+id).val('Temperature');
+        }
+        else {
+            alert(id);*/
+        switch (id){
+            case 'channel_field1':
+                $('#'+id).val('Temperature')
+                break;
+            case 'channel_field2':
+                $('#'+id).val('Current')
+                break;
+            case 'channel_field3':
+                $('#'+id).val('Voltage')
+                break;
+            case 'channel_field4':
+                $('#'+id).val('Power')
+                break;
+            case 'channel_field5':
+                $('#'+id).val('Nearby Mac Address')
+                break;
+            case 'channel_field6':
+                $('#'+id).val('Latitude')
+                break;
+            case 'channel_field7':
+                $('#'+id).val('Longitude')
+                break;
+            case 'channel_field8':
+                $('#'+id).val('Humidity')
+                break;
+            case 'channel_field9':
+                $('#'+id).val('Pressure')
+                break;
+            case 'channel_field10':
+                $('#'+id).val('Weight')
+                break;
+            case 'channel_field11':
+                $('#'+id).val('Presence')
+                break;
+            case 'channel_field12':
+                $('#'+id).val('Alarm')
+                break;
+            case 'channel_field13':
+                $('#'+id).val('Custom field 13')
+                break;
+            case 'channel_field14':
+                $('#'+id).val('Custom field 14')
+                break;
+            case 'channel_field15':
+                $('#'+id).val('Custom field 15')
+                break;
+            case 'channel_field16':
+                $('#'+id).val('Custom field 16')
+                break;
+        }
+        //$('#'+id).val(default_label + ' ' + id.substring(id.length-2));
+        //}
+
+		$('#'+id).after('<span class="small" id="span_' + id + '"><input type="checkbox" onclick="removeField(\'' + id + '\')"  /><span class="up2">remove</span></span>');
+		$('#'+id).select();
+	}
+
+	// removes a field
+	function removeField(id) {
+		$('#span_'+id).remove();
+		$('#'+id).val('');
+		$('#'+id).after('<span class="small" id="span_' + id + '"><input type="checkbox" onclick="addField(\'' + id + '\')"  /><span class="up2">add   </span></span>');
+	}
+
+
+</script>
+<% end %>

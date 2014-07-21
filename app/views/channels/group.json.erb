@@ -1,0 +1,37 @@
+{
+    "group_membership":
+    [
+        "group": [
+                    [
+                    {
+                    <%@grid.each do |gruppo|%>
+
+                                                  [
+                                                    {
+                                                    group_id: <%= gruppo.id %>,
+                                                    place_id: <%= gruppo.place_id %>,
+                                                    tag1: <%= gruppo.tag1 %>,
+                                                    tag2: <%= gruppo.tag2 %>,
+                                                    tag3: <%= gruppo.tag3 %>,
+                                                    TTL: <%= gruppo.ttl %>,
+                                                    members: [
+                                                                member: [
+                                                                            <% @apk.each_with_index do |memb,ind| %>
+
+                                                                                {
+                                                                                channel_id: <%= @chanid[ind] %>,
+                                                                                api_key: <%= memb%>
+                                                                                }
+                                                                        ],
+
+                                                                    <%end%>
+                                                             ]
+                                                    }
+                                                  ],
+                                                <% end %>
+                                                ]
+
+
+                    }
+
+}

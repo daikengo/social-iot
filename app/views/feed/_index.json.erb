@@ -1,0 +1,1 @@
+<%= "#{@callback}(" if @callback %><%= raw(@channel_output) %><% if @success %>,"server_time":"<%="#{(Time.now).strftime("%FT%T%:z")}"%>","feeds":<%= raw(@feed_output) %>}<% end %><%= ')' if @callback %>

@@ -1,0 +1,38 @@
+h1.
+
+h1. Installation on clean install of Ubuntu 13.04
+
+Start Terminal
+
+<code>cd ~
+
+<code>sudo apt-get install aptitude</code>
+<code>sudo aptitude update</code>
+<code>sudo aptitude install build-essential git-core curl</code>
+
+<code>bash < <(curl -s https://raw.github.com/wayneeseguin/rvm/master/binscripts/rvm-installer )</code>
+<code>echo '[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm" # Load RVM function' >> ~/.bash_profile</code>
+ 
+<code>source .bash_profile</code>
+
+<code>sudo aptitude install mysql-server libmysqlclient-dev libmysql-ruby</code>
+      Note: Enter and confirm a new MySQL password
+
+<code>sudo aptitude install libssl-dev libopenssl-ruby libxslt1.1 libxslt1-dev libxml2 libxml2-dev rubygems</code>
+
+<code>rvm pkg install openssl</code>
+<code>rvm pkg install iconv</code>
+<code>rvm install 1.9.3 -C --with-openssl-dir=$HOME/.rvm/usr,--with-iconv-dir=$HOME/.rvm/</code>
+<code>rvm --default use 1.9.3</code>
+
+in siot directory
+
+<code>bundle install</code>
+
+<code>gedit config/database.yml.example</code>
+      Note: Change database username and password for development, test, and production databases and save the file as database.yml
+
+<code>rake db:create</code>
+<code>rake db:schema:load</code>
+
+<code>rails server</code>

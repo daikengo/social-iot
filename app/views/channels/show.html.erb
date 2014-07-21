@@ -1,0 +1,206 @@
+<h2>
+  <%= link_to t(:channels), channels_path %> &raquo;
+  <%= t(:channel) %> <%= @channel.id %>
+</h2>
+
+<% if current_user && current_user.id == @channel.user_id %>
+  <ul>
+    <li><%= link_to t(:channel_edit), edit_channel_path(@channel.id) %></li>
+    <li><%= link_to t(:api_keys_manage), channel_api_keys_path(@channel) %></li>
+    <li><%= link_to "#{t(:charts_view)}", channel_charts_path(@channel) %></li>
+    <li><%= link_to "#{t(:channel_feed)} (json)", channel_feed_index_path(@channel, :key => @key, :format => :json) %></li>
+    <li><%= link_to "#{t(:channel_feed)} (xml)", channel_feed_index_path(@channel, :key => @key, :format => :xml) %></li>
+    <li><%= link_to "#{t(:channel_feed)} (csv)", channel_feed_index_path(@channel, :key => @key, :format => :csv) %></li>
+		<li><%= link_to t(:import_data), channel_import_path(@channel) %></li>
+  </ul>  
+
+  <br /><br />
+<table cellpadding=40>
+  <tr>
+    <td>
+<table class="table_no_header">
+   <tr>
+    <td class="left"><%= t(:channel_id) %>:</td>
+    <td><%= @channel.id %></td>
+  </tr>
+  <tr>
+    <td class="left"><%= t(:channel_name) %>:</td>
+    <td><%= @channel.name %></td>
+  </tr>
+  <tr>
+    <td class="left"><%= t(:api_key_write) %>:</td>
+   <td><%= @key %></td>
+  </tr>
+  <tr>
+    <td class="left"><%= t(:channel_description) %>:</td>
+    <td><%= @channel.description %></td>
+  </tr>
+  <tr>
+    <td class="left"><%= t(:entries) %>:</td>
+    <td><%= (@channel.last_entry_id) ? @channel.last_entry_id : '0' %></td>
+  </tr>
+  <tr>
+    <td class="left"><%= t(:created) %>:</td>
+    <td><%= l @channel.created_at, :format => :pretty %></td>
+  </tr>
+  <tr>
+    <td class="left"><%= t(:brand) %></td>
+    <td><%= @channel.brand%></td>
+  </tr>
+  <tr>
+    <td class="left"><%= t(:type) %></td>
+    <td><%= @channel.device_type%></td>
+  </tr>
+  <tr>
+    <td class="left"><%= t(:model) %>:</td>
+    <td><%= @channel.model %></td>
+  </tr>
+  <tr>
+    <td class="left"><%= t(:bt_mac_address)  %></td>
+    <td><%= @channel.bt_mac_address %></td>
+  </tr>
+  <tr>
+    <td class="left"><%= t(:wf_mac_address)  %></td>
+    <td><%= @channel.wf_mac_address %></td>
+  </tr>
+  <%unless @channel.mobility_status %>
+      <tr>
+        <td class="left"><%= t(:location_name) %></td>
+        <td><%= @channel.location_name %></td>
+      </tr>
+      <% end %>
+  
+  <% @channel.attribute_names.each do |attr| %>
+      <% if attr.index('field') and @channel[attr] and !@channel[attr].empty? %>
+  
+        <tr>
+          <td class="left"><%= attr %>:</td>
+          <td><%= @channel[attr] %></td>
+        </tr>
+        
+      <% end %>
+    <% end %>
+
+</table>
+    </td>
+    <td valign=top>
+      <h2>FRIENDS</h2>
+      <% if (@channel.oor_flag and !@oor.empty?) %>
+      <table class="nicetable">
+        <tr class="header TAC">
+          <td>OOR</td>
+          <td></td>
+        </tr>
+          <% @oor.each do |d| %>
+            <tr>
+              <td class="left"><%= link_to d.id, channel_path(d.id) %></td>
+              <td><%= link_to d.name, channel_path(d.id) %></td>
+            </tr>
+        <% end %>
+
+      </table>
+      <% end %>
+      <% if (@channel.por_flag and !@por.empty?) %>
+      <table class="nicetable">
+        <tr class="header TAC">
+          <td>POR</td>
+          <td></td>
+        </tr>
+        <% @por.each do |d| %>
+            <tr>
+              <td class="left"><%= link_to d.id, channel_path(d.id) %></td>
+              <td><%= link_to d.name, channel_path(d.id) %></td>
+            </tr>
+        <% end %>
+      </table>
+          <% end %>
+      <% if (@channel.clor_flag and !@clor.nil? and !@clor.empty?) %>
+      <table class="nicetable">
+        <tr class="header TAC">
+          <td>CLOR</td>
+          <td></td>
+        </tr>
+        <% @clor.each do |d| %>
+            <tr>
+              <td class="left"><%= link_to d.id, channel_path(d.id) %></td>
+              <td><%= link_to d.name, channel_path(d.id) %></td>
+            </tr>
+        <% end %>
+      </table>
+       <% end %>
+      <% if (@channel.sor_flag and !@sor.empty?) %>
+          <table class="nicetable">
+            <tr class="header TAC">
+              <td>SOR</td>
+              <td></td>
+            </tr>
+            <% @sor.each do |d| %>
+                <tr>
+                  <td class="left"><%= link_to d.id, channel_path(d.id) %></td>
+                  <td><%= link_to d.name, channel_path(d.id) %></td>
+                </tr>
+            <% end %>
+          </table>
+      <% end %>
+      <% if (@channel.cwor_flag and !@cwor.empty?) %>
+          <table class="nicetable">
+            <tr class="header TAC">
+              <td>CWOR</td>
+              <td></td>
+            </tr>
+            <% @cwor.each do |d| %>
+                <tr>
+                  <td class="left"><%= link_to d.id, channel_path(d.id) %></td>
+                  <td><%= link_to d.name, channel_path(d.id) %></td>
+                </tr>
+            <% end %>
+          </table>
+      <% end %>
+    </td>
+  </tr>
+</table>
+<% else %>
+  <% if @channel.public_flag %>
+    <%= t(:channel_public) %>
+    <br /><br />
+    <table class="table_no_header">
+        <tr>
+            <td class="left"><%= t(:channel_name) %>:</td>
+            <td><%= @channel.name %></td>
+        </tr>
+        <tr>
+            <td class="left"><%= t(:channel_description) %>:</td>
+            <td><%= @channel.description %></td>
+        </tr>
+
+        <% @channel.attribute_names.each do |attr| %>
+            <% if attr.index('field') and @channel[attr] and !@channel[attr].empty? %>
+       
+                <tr>
+                    <td class="left"><%= attr %>:</td>
+                    <td><%= @channel[attr] %></td>
+                </tr>
+       
+            <% end %>
+        <% end %>
+
+    </table>
+    
+    <% @channel.attribute_names.each do |attr| %>
+        <% if attr.index('field') and @channel[attr] and !@channel[attr].empty? %>
+                <%  indice="#{attr}"
+                    indice["field"]="" %>
+                <% if (indice != "5") %>
+
+   
+            <br /><br />
+
+            <iframe width="450" height="250" style="border: 1px solid #cccccc;" src="<%= "#{@domain}channels/#{@channel.id}/charts/#{indice}" %>"></iframe>
+                <% end %>
+        <% end %>
+    <% end %>
+  <% else %>
+    <%= t(:channel_not_public) %>
+  <% end %>
+
+<% end %>

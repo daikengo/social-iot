@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html" >
+<head>
+  <title>SIoT</title>
+  <%= include_gon %>
+  <%= stylesheet_link_tag "application", "gmaps4rails" %>
+  <%= javascript_include_tag "application" %>
+  <%= csrf_meta_tag %>
+  <%= yield :head %>
+</head>
+<body id="body">
+		<div id="wrapper">
+          <div id="main">
+			<div id="header"><div class="fixedwidth"><%= render 'layouts/header' %></div></div>
+			<div id="menuwrap" class="fixedwidth"><%= render 'layouts/menu' %></div>
+			<div id="content" class="fixedwidth"><%= yield %></div>
+            <%= yield :scripts %>
+          </div>
+        </div>
+        <div id="footer" align="center"class="info">
+          <table >
+            <tr>
+              <td align=right><img src="/images/logo_footer.png" height="69" /></td>
+              <td align=left >
+                <a href="http://www.diee.unica.it" style="color: #FFFFFF;">Dipartimento di Ingegneria Elettrica ed Elettronica</a><br>
+                <a href="http://www.unica.it" style="color: #FFFFFF;">Università degli studi di Cagliari</a><br>
+                    Piazza d'Armi, Cagliari, Italy<br>
+              </td>
+            </tr>
+          </table>
+          <p style="font-size: 12px;">built on <a href="http://www.thingspeak.com" style="color: #d62020;">ThingSpeak&trade;</a> core</p>
+          <p style="font-size: 12px;"><a rel="license" href="http://creativecommons.org/licenses/by-nc/3.0/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-nc/3.0/80x15.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc/3.0/">Creative Commons Attribution-NonCommercial 3.0 Unported License</a></p>
+
+
+        </div>
+
+
+</body>
+</html>
