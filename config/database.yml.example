@@ -20,8 +20,8 @@ development:
   reconnect: false
   database: siot_development
   pool: 5
-  username: root
-  password: "franco969"
+  username: user
+  password: "password"
 #  socket: /var/lib/mysql/mysql.sock
   socket: /var/run/mysqld/mysqld.sock
 
@@ -34,8 +34,8 @@ test:
   reconnect: false
   database: siot_test
   pool: 5
-  username: root
-  password: "franco969"
+  username: user
+  password: "password"
 #  socket: /var/lib/mysql/mysql.sock
   socket: /var/run/mysqld/mysqld.sock
 
@@ -45,5 +45,5 @@ production:
   reconnect: true
   database: siot_production
   pool: 5
-  username: root
-  password: "franco969"
+  username: user
+  password: "password"
